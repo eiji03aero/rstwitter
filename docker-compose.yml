@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  workspace:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile.rust-dev
+    environment:
+      DATABASE_URL: mysql://root:password@rstwitter-db:3306/rstwitter
+    volumes:
+      - .:/app
+    working_dir: /app
+    ports:
+      - "8090:8090"
+    tty: true
+    command: /bin/bash
+  rstwitter-db:
+    image: mysql:8.0-debian
+    platform: linux/amd64
+    container_name: rstwitter-db
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+    volumes:
+      - ./sql/entrypoint:/docker-entrypoint-initdb.d
+    tty: true

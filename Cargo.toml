@@ -1,0 +1,53 @@
+[package]
+name = "rstwitter"
+version = "0.1.0"
+edition = "2021"
+
+[workspace]
+members = [".", "entity", "migration"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+chrono = "0.4.23"
+
+[dependencies.serde]
+version = "^1.0.101"
+features = ["derive"]
+
+[dependencies.serde_json]
+version = "^1.0.41"
+
+[dependencies.entity]
+path = "entity"
+
+[dependencies.migration]
+path = "migration"
+
+[dependencies.actix-web]
+version = "4"
+
+[dependencies.sea-orm]
+version = "^0"
+features = [
+  "sqlx-mysql",
+  "runtime-actix-rustls",
+  "macros",
+  "with-chrono",
+]
+
+[dependencies.sea-orm-migration]
+version = "^0"
+features = [
+  "runtime-actix-rustls",
+  "sqlx-mysql",
+]
+
+[dependencies.derive_more]
+version = "0.99.0"
+default-features = false
+features = [
+  "from",
+  "add",
+  "iterator"
+]

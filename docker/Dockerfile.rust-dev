@@ -1,0 +1,4 @@
+FROM rust:1.65-buster
+
+RUN cargo install sea-orm-cli cargo-watch
+RUN rustup component add rustfmt
