@@ -3,6 +3,7 @@ use derive_more::{Display, Error};
 use sea_orm::DatabaseConnection;
 use serde::Serialize;
 
+pub mod tweets;
 pub mod users;
 
 #[derive(Clone)]

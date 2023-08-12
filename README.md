@@ -24,12 +24,13 @@
 - List accounts
 - Post tweet
     - attributes
-        - content
         - user id
+        - content
 - Follow other account
     - attributes
         - following id
         - followed id
+- Get following users
 - Get timeline
 
 # Models
@@ -48,7 +49,7 @@
 - followed_id: int
 
 # Todo
-- [ ] implement create tweet
+- [x] implement create tweet
 - [x] implement list accounts
 - [x] implement create account
     - implement ok pattern

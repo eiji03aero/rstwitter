@@ -8,33 +8,35 @@ use crate::usecases;
 #[derive(Serialize)]
 pub struct ListModel {
     pub id: i32,
-    pub username: String,
+    pub user_id: i32,
+    pub content: String,
     pub created_at: String,
     pub updated_at: String,
 }
 #[derive(Serialize)]
 pub struct ListResponseBody {
-    pub users: Vec<ListModel>,
+    pub tweets: Vec<ListModel>,
 }
-#[get("/users")]
+#[get("/tweets")]
 pub async fn list(
     data: web::Data<handlers::AppState>,
 ) -> Result<impl Responder, handlers::ApiError> {
     let db = &data.db;
-    let user_usecase = usecases::user::Usecase::new(repositories::users::Repository::new(db));
+    let tweet_usecase = usecases::tweet::Usecase::new(repositories::tweets::Repository::new(db));
 
-    match user_usecase.list().await {
-        Ok(users) => {
-            let list = users
+    match tweet_usecase.list().await {
+        Ok(tweets) => {
+            let list = tweets
                 .into_iter()
-                .map(|u| ListModel {
-                    id: u.id,
-                    username: u.username,
-                    created_at: u.created_at.format("%Y-%m-%d %H:%M:%S").to_string(),
-                    updated_at: u.updated_at.format("%Y-%m-%d %H:%M:%S").to_string(),
+                .map(|t| ListModel {
+                    id: t.id,
+                    user_id: t.user_id,
+                    content: t.content,
+                    created_at: t.created_at.format("%Y-%m-%d %H:%M:%S").to_string(),
+                    updated_at: t.updated_at.format("%Y-%m-%d %H:%M:%S").to_string(),
                 })
                 .collect();
-            let response = ListResponseBody { users: list };
+            let response = ListResponseBody { tweets: list };
             Ok(web::Json(response))
         }
         Err(_) => Err(handlers::ApiError::InternalError),
@@ -43,24 +45,28 @@ pub async fn list(
 
 #[derive(Deserialize)]
 pub struct CreateRequestBody {
-    username: String,
+    user_id: i32,
+    content: String,
 }
 #[derive(Serialize)]
 pub struct CreateResponseBody {
     message: String,
 }
-#[post("/users")]
+#[post("/tweets")]
 pub async fn create(
     data: web::Data<handlers::AppState>,
     body: web::Json<CreateRequestBody>,
 ) -> Result<impl Responder, handlers::ApiError> {
     let db = &data.db;
-    let user_usecase = usecases::user::Usecase::new(repositories::users::Repository::new(db));
+    let tweet_usecase = usecases::tweet::Usecase::new(repositories::tweets::Repository::new(db));
 
-    match user_usecase.save(body.username.as_str()).await {
+    match tweet_usecase
+        .save(body.user_id, body.content.to_string())
+        .await
+    {
         Ok(_) => {
             let response = CreateResponseBody {
-                message: String::from("Created user"),
+                message: String::from("Created tweet"),
             };
             Ok(web::Json(response))
         }

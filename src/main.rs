@@ -23,6 +23,8 @@ async fn main() -> std::io::Result<()> {
             .app_data(web::Data::new(state.clone()))
             .service(handlers::users::list)
             .service(handlers::users::create)
+            .service(handlers::tweets::list)
+            .service(handlers::tweets::create)
     })
     .bind((HOST, PORT))?
     .run()
