@@ -21,6 +21,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(state.clone()))
+            .service(handlers::users::list)
             .service(handlers::users::create)
     })
     .bind((HOST, PORT))?

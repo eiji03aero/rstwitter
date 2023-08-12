@@ -7,6 +7,7 @@ services:
       dockerfile: Dockerfile.rust-dev
     environment:
       DATABASE_URL: mysql://root:password@rstwitter-db:3306/rstwitter
+      CARGO_BUILD_TARGET_DIR: /tmp/target
     volumes:
       - .:/app
     working_dir: /app

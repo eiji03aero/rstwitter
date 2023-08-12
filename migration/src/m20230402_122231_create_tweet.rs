@@ -9,23 +9,25 @@ impl MigrationTrait for Migration {
         manager
             .create_table(
                 Table::create()
-                    .table(Users::Table)
+                    .table(Tweet::Table)
                     .if_not_exists()
                     .col(
-                        ColumnDef::new(Users::Id)
+                        ColumnDef::new(Tweet::Id)
                             .integer()
                             .not_null()
                             .auto_increment()
                             .primary_key(),
                     )
-                    .col(
-                        ColumnDef::new(Users::Username)
-                            .string()
-                            .unique_key()
-                            .not_null(),
+                    .col(ColumnDef::new(Tweet::UserId).integer().not_null())
+                    .col(ColumnDef::new(Tweet::Content).text().not_null())
+                    .col(ColumnDef::new(Tweet::CreatedAt).date_time().not_null())
+                    .col(ColumnDef::new(Tweet::UpdatedAt).date_time().not_null())
+                    .foreign_key(
+                        ForeignKey::create()
+                            .name("FK_tweets_user_id_users_id")
+                            .from(Tweet::Table, Tweet::UserId)
+                            .to(User::Table, User::Id),
                     )
-                    .col(ColumnDef::new(Users::CreatedAt).date_time().not_null())
-                    .col(ColumnDef::new(Users::UpdatedAt).date_time().not_null())
                     .to_owned(),
             )
             .await
@@ -33,17 +35,24 @@ impl MigrationTrait for Migration {
 
     async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
         manager
-            .drop_table(Table::drop().table(Users::Table).to_owned())
+            .drop_table(Table::drop().table(Tweet::Table).to_owned())
             .await
     }
 }
 
 /// Learn more at https://docs.rs/sea-query#iden
 #[derive(Iden)]
-enum Users {
+enum Tweet {
     Table,
     Id,
-    Username,
+    UserId,
+    Content,
     CreatedAt,
     UpdatedAt,
+}
+
+#[derive(Iden)]
+enum User {
+    Table,
+    Id,
 }

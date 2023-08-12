@@ -1,3 +1,5 @@
+following not working, probably obsoleted
+
 # Running Migrator CLI
 
 - Generate a new migration file
